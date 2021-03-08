@@ -87,17 +87,10 @@ WSGI_APPLICATION = 'dollar_charts.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-<<<<<<< HEAD
         'NAME': env('DATABASE_NAME'),
         'USER': env('DATABASE_USER'),
         'PASSWORD': env('DATABASE_PASSWORD'),
         'HOST': env('DATABASE_HOST'),
-=======
-        'NAME': 'dollarinfo',
-        'USER': 'dollar_info_user',
-        'PASSWORD': 'm0st4z4!92',
-        'HOST': 'localhost',
->>>>>>> parent of e7b08c9... Updated urls and settings.
         'PORT': '5432',
     }
 }
