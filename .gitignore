@@ -1,0 +1,10 @@
+/.vscode
+/venv
+__pycache__/
+/db.sqlite
+/debug.log
+/output.csv
+**/__pycache__/
+/logs
+/logs/*
+output.csv

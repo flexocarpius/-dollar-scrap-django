@@ -1,0 +1,167 @@
+{% extends 'shared/index.html' %}
+{% load static %}
+{% block header %}
+<div class="header bg-success pb-6">
+    <div class="container-fluid">
+        <div class="header-body">
+            <div class="row align-items-center py-4">
+                <div class="col-lg-6 col-7">
+                    <h6 class="h2 text-white d-inline-block mb-0"><span class="fa fa-chart-line"></span> Buy and sell price charts</h6>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block content %}
+<div class="container-fluid mt--6">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="h3 mb-0">Buy price</h5>
+                </div>
+                <div class="card-body">
+                    <div class="chart">
+                        <!-- Chart wrapper -->
+                        <canvas id="chart-buy-price" class="chart-canvas"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="h3 mb-0">Sell price</h5>
+                </div>
+                <div class="card-body">
+                    <div class="chart">
+                        <!-- Chart wrapper -->
+                        <canvas id="chart-sell-price" class="chart-canvas"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js" integrity="sha512-qTXRIMyZIFb8iQcfjXWCO8+M5Tbc38Qi5WzdPOYZHIlZpzBHG3L3by84BBBOiRGiEb7KKtAOAs5qYdUiZiQNNQ==" crossorigin="anonymous"></script>
+<script src="{% static 'vendor/chart.js/dist/Chart.min.js' %}"></script>
+<script src="{% static 'vendor/chart.js/dist/Chart.extension.js' %}"></script>
+<script>
+    const url = "{% url 'entry-list' %}";
+    let buyPriceChart = null;
+    let sellPriceChart = null;
+    const commonOptions = {
+        responsive: true,
+        maintainAspectRatio: false,
+        legend: {
+            display: false,
+        },
+        animation: {
+            duration: 0 
+        },
+        hover: {
+            animationDuration: 0
+        },
+        responsiveAnimationDuration: 0,
+        elements: {
+            line: {
+                tension: 0
+            },
+            point: {
+                radius: 0
+            }
+        },
+        showLines: true,
+        scales: {
+            xAxes: [{
+                type: 'time',
+                ticks: {
+                    display: false,
+                    beginAtZero: true
+                },
+                time: {
+                    displayFormats: {
+                        day: 'MM-DD-YYYY'
+                    }
+                },
+                scaleLabel: {
+                    display: true,
+                    labelString: "Date",
+                },
+            }],
+            yAxes: [{
+                ticks: {
+                    beginAtZero: true
+                }
+            }]
+        }
+    };
+
+    const initBuyPriceChart = ({ buy, sell, labels}) => {
+        var ctx = document.getElementById('chart-buy-price').getContext('2d');
+        buyPriceChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [
+                    {
+                        type: 'line',
+                        label: 'Buy price',
+                        data: buy,
+                        fill: false,
+                        borderColor: '#1976D2',
+                    }
+                ]
+            },
+            options: commonOptions
+        });
+    }
+
+    const initSellPriceChart = ({ buy, sell, labels}) => {
+        var ctx = document.getElementById('chart-sell-price').getContext('2d');
+        sellPriceChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [
+                    {
+                        type: 'line',
+                        label: 'Sell price',
+                        data: sell,
+                        fill: false,
+                        borderColor: '#E64A19',
+                    }
+                ]
+            },
+            options: commonOptions
+        });
+    }
+
+    const getEntries = async () => {
+        const response = await fetch(url);
+        const data = await response.json();
+        return data;
+    }
+
+    $(document).ready(async () => {
+        const response = await getEntries();
+        const slicedResponse = response.slice(0, 500)
+        let buy = [];
+        let sell = [];
+        let labels = [];
+        for (let i = 0; i < slicedResponse.length; i++) {
+            const entry = slicedResponse[i];
+            buy.push(entry.buy_price);
+            sell.push(entry.sell_price);
+            labels.push(new Date(entry.date))
+        }
+        initBuyPriceChart({ buy, sell, labels });
+        initSellPriceChart({ buy, sell, labels });
+    });
+</script>
+{% endblock %}
