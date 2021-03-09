@@ -137,6 +137,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
 STATICFILES_DIRS = [
     BASE_DIR / "dollar_charts_webapp/static",
 ]
+STATICFILES_STORAGE = 'whitenoise.storage.GzipManifestStaticFilesStorage'
 
 REST_FRAMEWORK = {
     # Use Django's standard `django.contrib.auth` permissions,

@@ -46,14 +46,17 @@ class ElDolarInfoScrapper():
                     print('Format is not valid. Please verify website format.')
                     logging.warning('Format is not valid. Please verify website format.')
                     self.close()
+                    return None
             else:
                 print('Table not found on page.')
                 logging.warning('Table not found on page.')
                 self.close()
+                return None
         except Exception as e: 
             print(e)
             logging.error(e)
             self.close()
+            return None
 
     def scrap_history(self):
         history_url = 'https://www.eldolar.info/en/mexico/dia/'
