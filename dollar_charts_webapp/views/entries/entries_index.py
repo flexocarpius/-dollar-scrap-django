@@ -9,12 +9,12 @@ class EntriesIndex(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        today = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
+        today = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0) - timedelta(days=1)
         end_today = today + timedelta(hours=23, minutes=59, seconds=59)
         today_entry = Entry.objects.filter(date__gte=today, date__lte=end_today).first()
         context['entry'] = today_entry
 
-        yesterday = today - timedelta(days=1)
+        yesterday = today - timedelta(days=2)
         end_yesterday = yesterday + timedelta(hours=23, minutes=59, seconds=59)
         yesterday_entry = Entry.objects.filter(date__gte=yesterday, date__lte=end_yesterday).first()
         context['yesterday_entry'] = yesterday_entry
