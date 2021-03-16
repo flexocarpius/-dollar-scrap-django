@@ -9,28 +9,21 @@ class EntriesIndex(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        today = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0) - timedelta(days=1)
-        end_today = today + timedelta(hours=23, minutes=59, seconds=59)
-        today_entry = Entry.objects.filter(date__gte=today, date__lte=end_today).first()
+        today_entry = Entry.objects.order_by('-date').first()
         context['entry'] = today_entry
 
-        yesterday = today - timedelta(days=2)
-        end_yesterday = yesterday + timedelta(hours=23, minutes=59, seconds=59)
-        yesterday_entry = Entry.objects.filter(date__gte=yesterday, date__lte=end_yesterday).first()
+        yesterday_entry = Entry.objects.order_by('-date')[1]
         context['yesterday_entry'] = yesterday_entry
 
         context['buy_percent'] = 100 * (today_entry.buy_price - yesterday_entry.buy_price) / (today_entry.buy_price + yesterday_entry.buy_price)
         context['sell_percent'] = 100 * (today_entry.sell_price - yesterday_entry.sell_price) / (today_entry.sell_price + yesterday_entry.sell_price)
 
+        week_entries_db = Entry.objects.order_by('-date')[:8]
         week_entries = []
-        base_date = today
-        end_base_date = base_date + timedelta(hours=23, minutes=59, seconds=59)
-        y_base_date = base_date - timedelta(days=1)
-        y_end_base_date = y_base_date + timedelta(hours=23, minutes=59, seconds=59)
 
         for times in range(0, 7):
-            entry = Entry.objects.filter(date__gte=base_date, date__lte=end_base_date).first()
-            y_entry = Entry.objects.filter(date__gte=y_base_date, date__lte=y_end_base_date).first()
+            entry = week_entries_db[times]
+            y_entry = week_entries_db[times + 1]
 
             week_entries.append({
                 'entry': entry,
@@ -38,11 +31,6 @@ class EntriesIndex(TemplateView):
                 'buy_percent': 100 * (entry.buy_price - y_entry.buy_price) / (entry.buy_price + y_entry.buy_price),
                 'sell_percent': 100 * (entry.sell_price - y_entry.sell_price) / (entry.sell_price + y_entry.sell_price)
             })
-
-            base_date = base_date - timedelta(days=1)
-            end_base_date = base_date + timedelta(hours=23, minutes=59, seconds=59)
-            y_base_date = base_date - timedelta(days=1)
-            y_end_base_date = y_base_date + timedelta(hours=23, minutes=59, seconds=59)
 
         context['week_entries'] = week_entries
 
