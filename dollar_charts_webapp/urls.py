@@ -1,3 +1,4 @@
+from dollar_charts_webapp.views.entries.entries_data import weekly_data
 from dollar_charts_webapp.views.entries.entries_index import EntriesIndex
 from dollar_charts_webapp.views.entries.entries_chart import EntriesChart
 from dollar_charts_webapp.viewsets import EntryViewSet
@@ -15,4 +16,5 @@ urlpatterns = [
     path('chart/', EntriesChart.as_view(), name='entries_chart'),
     path('scrap/', scrap, name='entries_scrap'),
     path('api/', include(router.urls)),
+    path('weekly/', weekly_data, name='weekly_data'),
 ]
