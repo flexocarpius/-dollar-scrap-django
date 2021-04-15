@@ -37,6 +37,8 @@ ALLOWED_HOSTS = [
     'https://dollar-web-app.herokuapp.com/',
     'http://localhost:8100',
     'http://localhost',
+    'capacitor://localhost',
+    'ionic://localhost',
 ]
 
 
@@ -179,7 +181,9 @@ LOGGING = {
 }
 
 CORS_ALLOWED_ORIGINS = [
-    'http://localhost:8100'
+    'http://localhost:8100',
+    'capacitor://localhost',
+    'ionic://localhost',
 ]
 
 django_heroku.settings(locals())
