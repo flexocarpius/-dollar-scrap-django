@@ -180,10 +180,11 @@ LOGGING = {
     },
 }
 
-CORS_ALLOWED_ORIGINS = [
-    'http://localhost:8100',
-    'capacitor://localhost',
-    'ionic://localhost',
-]
+# CORS_ALLOWED_ORIGINS = [
+#     'http://localhost:8100',
+#     'capacitor://localhost',
+#     'ionic://localhost',
+# ]
+CORS_ALLOW_ALL_ORIGINS = True
 
 django_heroku.settings(locals())
